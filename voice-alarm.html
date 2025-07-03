@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Alarm System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        section {
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin: 1rem 0 0.5rem;
+            font-weight: bold;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .clock {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #4CAF50;
+        }
+        .confirmation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e7f5e6;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Voice Alarm System</h1>
+        <div class="clock" id="current-time">Loading current time...</div>
+    </header>
+    <section>
+        <h2>Set Medication Reminder</h2>
+        <label for="medicine-name">Medicine Name:</label>
+        <input type="text" id="medicine-name" placeholder="Enter medicine name" required>
+        
+        <label for="reminder-time">Reminder Time (HH:MM AM/PM):</label>
+        <input type="text" id="reminder-time" placeholder="e.g., 08:30 AM" required>
+        
+        <label for="voice-message">Voice Reminder Message:</label>
+        <textarea id="voice-message" placeholder="Enter the message to be spoken" required></textarea>
+        
+        <button id="set-reminder-btn">Set Reminder</button>
+        <div id="status"></div>
+    </section>
+
+    <script>
+        let alarmTimeout;
+
+        // Function to update the real-time clock
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const amPm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12; // Convert to 12-hour format
+
+            const timeString = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${amPm}`;
+            document.getElementById('current-time').textContent = `Current Time: ${timeString}`;
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+        updateClock(); // Initialize clock immediately
+
+        // Function to set a reminder
+        function setReminder() {
+            const medicineName = document.getElementById('medicine-name').value.trim();
+            const reminderTime = document.getElementById('reminder-time').value.trim();
+            const voiceMessage = document.getElementById('voice-message').value.trim();
+
+            if (!medicineName || !reminderTime || !voiceMessage) {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            const [time, period] = reminderTime.split(' ');
+            const [hours, minutes] = time.split(':').map(Number);
+            const isPM = period.toUpperCase() === 'PM';
+            const reminderHours = isPM && hours !== 12 ? hours + 12 : hours === 12 && !isPM ? 0 : hours;
+
+            const now = new Date();
+            const reminderDate = new Date();
+            reminderDate.setHours(reminderHours, minutes, 0, 0);
+
+            if (reminderDate <= now) {
+                alert('The reminder time must be in the future.');
+                return;
+            }
+
+            const timeUntilReminder = reminderDate - now;
+
+            // Show confirmation message on the page
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `
+                <div class="confirmation">
+                    Reminder set successfully for <strong>${reminderTime}</strong> with voice alert: "<strong>${voiceMessage}</strong>".
+                </div>
+            `;
+
+            // Set the alarm
+            alarmTimeout = setTimeout(() => {
+                playVoiceAlert(voiceMessage);
+            }, timeUntilReminder);
+        }
+
+        // Function to play the voice alert
+        function playVoiceAlert(message) {
+            const utterance = new SpeechSynthesisUtterance(message);
+            utterance.lang = 'en-US';
+            utterance.volume = 1; // Max volume
+            utterance.rate = 1; // Normal speed
+            utterance.pitch = 1; // Normal pitch
+
+            speechSynthesis.speak(utterance);
+        }
+
+        // Attach the setReminder function to the button
+        document.getElementById('set-reminder-btn').addEventListener('click', setReminder);
+    </script>
+</body>
+</html>

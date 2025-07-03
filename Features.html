@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Price Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+        section {
+            padding: 2rem;
+            margin: 1rem auto;
+            max-width: 800px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+        }
+        .cheapest {
+            background-color: #e6ffe6;
+        }
+        .out-of-stock {
+            background-color: #f9d6d5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pharmacy Price Comparison</h1>
+        <p>Enter your prescription details and address to compare prices from nearby pharmacies.</p>
+    </header>
+    <section>
+        <form id="prescription-form">
+            <div class="form-group">
+                <label for="medicine-name">Medicine Name</label>
+                <input type="text" id="medicine-name" placeholder="e.g., Paracetamol" required>
+            </div>
+            <div class="form-group">
+                <label for="dosage-form">Dosage Form</label>
+                <select id="dosage-form" required>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Syrup">Syrup</option>
+                    <option value="Injection">Injection</option>
+                    <option value="Capsule">Capsule</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="strength">Strength</label>
+                <input type="text" id="strength" placeholder="e.g., 500mg" required>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" placeholder="e.g., 10" required>
+            </div>
+            <div class="form-group">
+                <label for="user-address">Your Address</label>
+                <input type="text" id="user-address" placeholder="e.g., MLRIT College, Dundigal, Hyderabad" required>
+            </div>
+            <button type="button" onclick="fetchNearbyPharmacies()">Compare Prices</button>
+        </form>
+        <div id="pharmacy-results"></div>
+    </section>
+    <script>
+        function fetchNearbyPharmacies() {
+            const medicineName = document.getElementById('medicine-name').value.trim();
+            const dosageForm = document.getElementById('dosage-form').value;
+            const strength = document.getElementById('strength').value.trim();
+            const quantity = document.getElementById('quantity').value.trim();
+            const userAddress = document.getElementById('user-address').value.trim();
+
+            if (!medicineName || !dosageForm || !strength || !quantity || !userAddress) {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            const pharmacyResultsDiv = document.getElementById('pharmacy-results');
+            pharmacyResultsDiv.innerHTML = '<p>Fetching nearby pharmacies... Please wait.</p>';
+
+            // Geocode the user's address to get latitude and longitude
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ address: userAddress }, (results, status) => {
+                if (status === 'OK') {
+                    const userLocation = results[0].geometry.location;
+
+                    // Use Google Maps Places API to fetch nearby pharmacies
+                    const service = new google.maps.places.PlacesService(document.createElement('div'));
+                    const request = {
+                        location: userLocation,
+                        radius: 5000, // 5 km radius
+                        type: ['pharmacy'],
+                    };
+
+                    service.nearbySearch(request, (results, status) => {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            const pharmacies = results.map(place => ({
+                                name: place.name,
+                                address: place.vicinity,
+                                price: Math.floor(Math.random() * 500) + 50, // Simulated price
+                                availability: Math.random() > 0.2 ? 'In Stock' : 'Out of Stock',
+                                link: '#',
+                            }));
+
+                            const cheapestPrice = Math.min(...pharmacies.map(p => p.price));
+
+                            pharmacyResultsDiv.innerHTML = `
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Pharmacy Name</th>
+                                            <th>Address</th>
+                                            <th>Price</th>
+                                            <th>Availability</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${pharmacies.map(pharmacy => `
+                                            <tr class="${pharmacy.price === cheapestPrice ? 'cheapest' : ''} ${pharmacy.availability === 'Out of Stock' ? 'out-of-stock' : ''}">
+                                                <td>${pharmacy.name}</td>
+                                                <td>${pharmacy.address}</td>
+                                                <td>₹${pharmacy.price}</td>
+                                                <td>${pharmacy.availability}</td>
+                                                <td><a href="${pharmacy.link}" target="_blank">Buy/Reserve</a></td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            `;
+                        } else {
+                            pharmacyResultsDiv.innerHTML = '<p>Failed to fetch nearby pharmacies. Please try again later.</p>';
+                        }
+                    });
+                } else {
+                    pharmacyResultsDiv.innerHTML = '<p>Failed to geocode the address. Please check the address and try again.</p>';
+                }
+            });
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+</body>
+</html>

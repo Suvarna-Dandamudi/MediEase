@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediEase</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+        }
+        nav a {
+            color: white;
+            padding: 1rem;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: #f4f4f4;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .interactive-section {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+            background-color: #fff;
+        }
+        .card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .card h3 {
+            margin-bottom: 1rem;
+        }
+        .card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .card a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to MediEase</h1>
+        <p>Your trusted partner in healthcare solutions</p>
+    </header>
+    <nav>
+        <a href="mediease.html">Home</a>
+        <a href="steps.html">How To Use</a>
+        <a href="features.html">Features</a>
+        <a href="About.html">About</a>
+        <a href="demo.html">Demo</a>
+        <a href="Contact.html">Contact</a>
+    </nav>
+    <section class="hero">
+        <h1>Introducing MediEase</h1>
+        <p>Streamline your healthcare experience with our innovative platform. From managing appointments to accessing medical records, MediEase is here to make healthcare easier for everyone.</p>
+    </section>
+    <section class="interactive-section">
+        <div class="card">
+            <h3>Medicine Reminders</h3>
+            <p>Set personalized reminders to take your medicines on time and stay healthy.</p>
+            <a href="medicine-reminders.html">Set Reminders</a>
+        </div>
+        <div class="card">
+            <h3>Voice Alarm</h3>
+            <p>Set voice alarms to remind you of important tasks or medications with clear audio alerts.</p>
+            <a href="voice-alarm.html">Set Voice Alarm</a>
+        </div>
+        <div class="card">
+            <h3>Price Comparison</h3>
+            <p>Compare prices of medicines across pharmacies to save money on your prescriptions.</p>
+            <a href="features.html#price-comparison">Compare Now</a>
+        </div>
+        <div class="card">
+            <h3>Health Insights</h3>
+            <p>Track your health progress and get insights to improve your well-being.</p>
+            <a href="features.html#health-insights">View Insights</a>
+        </div>
+    </section>
+</body>
+</html>

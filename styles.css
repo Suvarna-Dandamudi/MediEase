@@ -1,0 +1,49 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        background-color: #f9f9f9;
+    }
+    header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+    }
+    section {
+        padding: 2rem;
+        max-width: 600px;
+        margin: 2rem auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    section h1 {
+        text-align: center;
+        color: black; /* Black color for the "Steps" heading */
+    }
+    ol {
+        padding-left: 1.5rem;
+    }
+    li {
+        margin-bottom: 0.5rem;
+        color: #555;
+    }
+    nav {
+        display: flex;
+        justify-content: center;
+        background-color: #333;
+        padding: 0.5rem 0;
+    }
+    nav a {
+        color: white;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+    nav a:hover {
+        background-color: #575757;
+    }
+</style>

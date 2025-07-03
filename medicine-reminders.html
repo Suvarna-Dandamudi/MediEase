@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Reminders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        section {
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin: 1rem 0 0.5rem;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .time-inputs {
+            display: flex;
+            gap: 1rem;
+        }
+        .time-inputs input {
+            width: calc(33.33% - 0.5rem);
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .clock {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #4CAF50;
+        }
+        .medicine-container {
+            margin-bottom: 2rem;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Medicine Reminders</h1>
+    </header>
+    <section>
+        <h1>Set Reminders</h1>
+        <div class="clock" id="clock">Loading current time...</div>
+        
+        <div id="medicine-container">
+            <div class="medicine-container">
+                <label for="medicine-name">Medicine Name:</label>
+                <input type="text" class="medicine-name" placeholder="Enter medicine name" required>
+                
+                <label for="dosage">Dosage:</label>
+                <input type="text" class="dosage" placeholder="Enter dosage (e.g., 1 tablet)" required>
+                
+                <label for="reminder-time">Reminder Time:</label>
+                <div class="time-inputs">
+                    <input type="number" class="hours" placeholder="Hours (0-12)" min="0" max="12" required>
+                    <input type="number" class="minutes" placeholder="Minutes (0-59)" min="0" max="59" required>
+                    <input type="number" class="seconds" placeholder="Seconds (0-59)" min="0" max="59" required>
+                </div>
+                <label for="am-pm">AM/PM:</label>
+                <select class="am-pm">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+
+                <label for="frequency">Frequency:</label>
+                <select class="frequency">
+                    <option value="once">Once</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+            </div>
+        </div>
+        
+        <button type="button" onclick="addMedicine()">Add Another Medicine</button>
+        <button onclick="setAllReminders()">Start All Reminders</button>
+    </section>
+    
+    <script>
+        // Function to dynamically add another medicine section
+        function addMedicine() {
+            const medicineContainer = document.getElementById('medicine-container');
+            const newMedicine = document.createElement('div');
+            newMedicine.classList.add('medicine-container');
+            newMedicine.innerHTML = `
+                <label for="medicine-name">Medicine Name:</label>
+                <input type="text" class="medicine-name" placeholder="Enter medicine name" required>
+                
+                <label for="dosage">Dosage:</label>
+                <input type="text" class="dosage" placeholder="Enter dosage (e.g., 1 tablet)" required>
+                
+                <label for="reminder-time">Reminder Time:</label>
+                <div class="time-inputs">
+                    <input type="number" class="hours" placeholder="Hours (0-12)" min="0" max="12" required>
+                    <input type="number" class="minutes" placeholder="Minutes (0-59)" min="0" max="59" required>
+                    <input type="number" class="seconds" placeholder="Seconds (0-59)" min="0" max="59" required>
+                </div>
+                <label for="am-pm">AM/PM:</label>
+                <select class="am-pm">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                </select>
+
+                <label for="frequency">Frequency:</label>
+                <select class="frequency">
+                    <option value="once">Once</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+            `;
+            medicineContainer.appendChild(newMedicine);
+        }
+
+        // Function to set all reminders
+        function setAllReminders() {
+            const medicines = document.querySelectorAll('.medicine-container');
+
+            medicines.forEach((medicine, index) => {
+                const medicineName = medicine.querySelector('.medicine-name').value;
+                const dosage = medicine.querySelector('.dosage').value;
+                const hours = parseInt(medicine.querySelector('.hours').value, 10);
+                const minutes = parseInt(medicine.querySelector('.minutes').value, 10);
+                const seconds = parseInt(medicine.querySelector('.seconds').value, 10);
+                const amPm = medicine.querySelector('.am-pm').value;
+                const frequency = medicine.querySelector('.frequency').value;
+
+                if (!medicineName || !dosage || isNaN(hours) || isNaN(minutes) || isNaN(seconds) || hours < 0 || hours > 12 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
+                    alert(`Please fill out valid values for medicine ${index + 1}.`);
+                    return;
+                }
+
+                const timeString = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${amPm}`;
+                alert(`Reminder ${index + 1} set for ${medicineName} (${dosage}) at ${timeString}, Frequency: ${frequency}.`);
+
+                // Simulate a reminder (for demo purposes, we'll use a 5-second delay for each reminder)
+                setTimeout(() => {
+                    const message = `Time to take ${medicineName} (${dosage})`;
+                    alert(message);
+
+                    // Trigger voice alert
+                    const speech = new SpeechSynthesisUtterance(message);
+                    window.speechSynthesis.speak(speech);
+                }, 5000 * (index + 1)); // Replace 5000 with actual time calculation logic if needed
+            });
+        }
+
+        // Function to update the clock
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const amPm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12; // Convert to 12-hour format
+
+            const timeString = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds} ${amPm}`;
+            document.getElementById('clock').textContent = `Current Time: ${timeString}`;
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
